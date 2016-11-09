@@ -9,7 +9,7 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <logback.version>1.1.1</logback.version>
+    <logback.version>1.1.2</logback.version>
     <spring.version>4.1.6.RELEASE</spring.version>
   </properties>
   <dependencies>
@@ -21,11 +21,11 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- 1. 日志相关依赖 ,self4j +logback -->
+    <!-- 1. 日志相关依赖 ,slf4j +logback -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.5.6</version>
+      <version>1.7.7</version>
     </dependency>
 
     <dependency>

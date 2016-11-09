@@ -4,6 +4,7 @@ package org.seckill.exception;
  * Created by lenovo on 2016/11/9.
  */
 public class SeckillCloseException extends SeckillException {
+
     public SeckillCloseException(String message) {
         super(message);
     }
