@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.bind.SchemaOutputResolver;
 import java.util.Date;
 import java.util.List;
 
@@ -36,9 +37,10 @@ public class SeckillController {
         model.addAttribute("list",list);
         return "list"; //WEB-INF/jsp/list.jsp
     }
-
-    @RequestMapping(value = "/${seckillId}/detail" , method = RequestMethod.GET)
+    //参数占位符不需要$号
+    @RequestMapping(value = "/{seckillId}/detail" , method = RequestMethod.GET)
     public String detail(@PathVariable("seckillId") Long seckillId, Model model){
+        //System.out.println("ID===========" + seckillId);
         if (seckillId==null){
             return "redirect:/seckill/list";
         }
@@ -51,7 +53,7 @@ public class SeckillController {
     }
 
     //ajax json
-    @RequestMapping(value = "/${seckillId}/exposer" ,
+    @RequestMapping(value = "/{seckillId}/exposer" ,
                     method = RequestMethod.POST,
                     produces = {"application/json;charset=UTF-8"})
     @ResponseBody  //指明返回结果是json类型
@@ -67,7 +69,7 @@ public class SeckillController {
         return result;
     }
 
-    @RequestMapping(value = "/${seckillId}/${md5}/execution",
+    @RequestMapping(value = "/{seckillId}/{md5}/execution",
                     method = RequestMethod.POST,
                     produces = {"application/json;charset=UTF-8"})
     @ResponseBody

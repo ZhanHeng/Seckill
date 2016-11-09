@@ -29,10 +29,10 @@
         <!--3. 配置jsp 显示ViewResolver -->
         <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
             <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-            <property name="prefix" value="/WEB-INF/jsp"/>
+            <property name="prefix" value="/WEB-INF/jsp/"/>
             <property name="suffix" value=".jsp"/>
         </bean>
 
         <!--4. 扫描Web层相关的bean -->
-        <context:conponent-scan base-package = "org.seckill.web"/>
+        <context:component-scan base-package = "org.seckill.web"/>
 </beans>
