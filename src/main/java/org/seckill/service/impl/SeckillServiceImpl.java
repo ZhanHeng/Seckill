@@ -1,5 +1,6 @@
 package org.seckill.service.impl;
 
+import org.apache.commons.collections.MapUtils;
 import org.seckill.dao.RedisDao;
 import org.seckill.dao.SeckillDao;
 import org.seckill.dao.SuccessKilledDao;
@@ -20,7 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -82,13 +85,14 @@ public class SeckillServiceImpl implements SeckillService {
         String md5 = getMD5(seckillId) ;
         return new Exposer(true,md5 ,seckillId);
     }
-    @Transactional
+
     /**
      * 使用注解控制事务方法的优点:
      * 1.开发团队达成一致的约定，明确标注实务方法的编程风格
      * 2.保证事务方法的执行时间尽可能的短,不要穿插其它的网络操作RPC/HTTP请求或者剥离到事务方法外部
      * 3.不是所有的方法都需要事务,如:只有一条修改操作，只读操作
      */
+    @Transactional
     public SeckillExecution executeSeckill(long seckillId, long userPhone, String md5)
             throws SeckillException, RepeatKillException, SeckillCloseException {
         //SeckillId变了或者篡改了md5就匹配不上
@@ -123,6 +127,34 @@ public class SeckillServiceImpl implements SeckillService {
         } catch (Exception e){
             logger.error(e.getMessage() , e );  //所有编译期异常，转化为运行期异常
             throw new SeckillException("seckill inner error"+e.getMessage());
+        }
+    }
+
+    public SeckillExecution executeSeckillProcedure(long seckillId, long userPhone, String md5) throws SeckillException, RepeatKillException, SeckillCloseException {
+        //SeckillId变了或者篡改了md5就匹配不上
+        if(md5==null || !md5.equals(getMD5(seckillId))){
+            throw new SeckillException("seckill data rewrite");
+        }
+        Date nowTime = new Date();
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("seckillId",seckillId);
+        map.put("phone",userPhone);
+        map.put("killTime",nowTime);
+        map.put("result",null);
+        //执行存储过程 , result被赋值
+        try {
+            seckillDao.seckillByrocedure(map);
+            //获取result
+            int result = MapUtils.getInteger(map,"result",-2);
+            if(result == 1 ){   //秒杀成功
+                SuccessKilled successKill = successKilledDao.queryByIdWithSeckill(seckillId,userPhone);
+                return new SeckillExecution(seckillId,SeckillStatEnum.SUCCESS,successKill);
+            }else {
+                return new SeckillExecution(seckillId,SeckillStatEnum.stateOf(result));
+            }
+        }catch (Exception e ){
+            logger.error(e.getMessage(),e);
+            return new SeckillExecution(seckillId,SeckillStatEnum.INNER_ERROR);
         }
     }
 }
