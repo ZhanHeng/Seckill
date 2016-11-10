@@ -14,7 +14,7 @@
             <h2>秒杀列表</h2>
         </div>
         <div class="panel-body">
-            <table class="table table-hover">
+            <table class="table table-hover table-bordered">
                 <thead>
                 <th>名称</th>
                 <th>库存</th>

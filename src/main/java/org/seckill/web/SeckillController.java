@@ -40,7 +40,6 @@ public class SeckillController {
     //参数占位符不需要$号
     @RequestMapping(value = "/{seckillId}/detail" , method = RequestMethod.GET)
     public String detail(@PathVariable("seckillId") Long seckillId, Model model){
-        //System.out.println("ID===========" + seckillId);
         if (seckillId==null){
             return "redirect:/seckill/list";
         }
@@ -86,18 +85,19 @@ public class SeckillController {
             return new SeckillResult<SeckillExecution>(true,seckillExecution);
         }catch (RepeatKillException e){
             SeckillExecution execution = new SeckillExecution(seckillId, SeckillStatEnum.REPEAT_KILL);
-            return new SeckillResult<SeckillExecution>(false,execution);
+            return new SeckillResult<SeckillExecution>(true,execution);
         }catch (SeckillCloseException e){
             SeckillExecution execution = new SeckillExecution(seckillId, SeckillStatEnum.END);
-            return new SeckillResult<SeckillExecution>(false,execution);
+            return new SeckillResult<SeckillExecution>(true,execution);
         }catch (Exception e){
             logger.error(e.getMessage(),e);
             SeckillExecution execution = new SeckillExecution(seckillId, SeckillStatEnum.INNER_ERROR);
-            return new SeckillResult<SeckillExecution>(false,execution);
+            return new SeckillResult<SeckillExecution>(true,execution);
         }
     }
 
     @RequestMapping(value = "/time/now" ,method = RequestMethod.GET)
+    @ResponseBody
     public SeckillResult<Long> time(){
         Date now = new Date();
         return new SeckillResult<Long>(true,now.getTime());

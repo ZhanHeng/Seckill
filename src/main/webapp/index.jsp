@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <title>秒杀首页</title>
+   <title>首页</title>
    <!-- 动态包含，多个Servlet -->
    <%@include file="WEB-INF/jsp/common/head.jsp"%>
 </head>
